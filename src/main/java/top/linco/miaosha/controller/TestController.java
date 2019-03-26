@@ -6,6 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import top.linco.miaosha.domain.User;
+import top.linco.miaosha.redis.RedisService;
+import top.linco.miaosha.redis.UserKey;
 import top.linco.miaosha.result.Result;
 import top.linco.miaosha.service.UserService;
 
@@ -15,6 +17,9 @@ public class TestController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    RedisService redisService;
 
     @RequestMapping("/")
     @ResponseBody
@@ -46,5 +51,31 @@ public class TestController {
     public Result<Boolean> tx(){
         boolean flag = userService.tx();
         return Result.success(flag);
+    }
+    /**
+     * 测试redis
+     */
+    @RequestMapping("/redis/get")
+    @ResponseBody
+    public Result<User> testRedisGet(){
+        User user = redisService.get(UserKey.getById,""+2,User.class);
+        return Result.success(user);
+    }
+
+    /**
+     * 测试redis
+     */
+    @RequestMapping("/redis/set")
+    @ResponseBody
+    public Result<User> testRedisSet(){
+        User user = new User();
+        user.setId(3);
+        user.setName("333");
+        boolean flag = redisService.set(UserKey.getById,""+2,user);
+        if (flag){
+            User user2 = redisService.get(UserKey.getById,""+2,User.class);
+            return Result.success(user2);
+        }
+        return Result.success(null);
     }
 }
