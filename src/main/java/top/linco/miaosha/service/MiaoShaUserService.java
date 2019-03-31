@@ -30,7 +30,7 @@ public class MiaoShaUserService {
         if (miaoShaUser == null){
             throw new  GlobalException(CodeMsg.MOBILE_NOT_EXIST);
         }
-        //验证密码
+        //验证密码。
         String dbPassword = miaoShaUser.getPassword();
         String dbSalt = miaoShaUser.getSalt();
         String calcPassword = MD5Util.formPassToDBPass(formPassword,dbSalt);
